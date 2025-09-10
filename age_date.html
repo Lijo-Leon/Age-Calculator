@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Age Calculator</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet" />
+    <style>
+        .title {
+            font-weight: 700;
+            font-family: "Poppins", sans-serif;
+        }
+
+        .btn {
+            font-weight: 500;
+            font-family: "Poppins", sans-serif;
+        }
+    </style>
+</head>
+
+<body class="">
+    <div class="main w-full h-[100vh] bg-blue-100 lg:flex items-center justify-center">
+        <div class="left lg:w-1/2">
+            <img src="./age-img-Photoroom.png" alt="">
+        </div>
+
+        <div class="right lg:w-1/2 h-[100%] flex flex-col gap-6 items-center bg-white p-6">
+            <h1 class="title text-5xl text-[#03274f] lg:mt-[12px] text-center">AGE CALCULATOR</h1>
+
+            <input class="border-2 border-[#03274f] py-4 px-4 rounded-lg w-3/4 placeholder:font-bold placeholder:text-[#03274f] font-bold"
+                type="text" id="name" placeholder="Enter your name">
+
+            <input class="border-2 border-[#03274f] py-4 px-4 rounded-lg w-3/4 text-center font-bold text-[#03274f]"
+                type="date" id="date">
+
+            <button class="btn bg-blue-100 border-[#03264f71] hover:cursor-pointer hover:bg-blue-200 border-1 py-2 px-4 rounded w-3/4 text-[#03274f] font-extrabold text-[19px]"
+                onclick="calc()">Calculate</button>
+
+            <div id="result" class="text-center w-full pb-8 lg:pb-0">
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calc() {
+            const name = document.getElementById("name").value || "User";
+            const dob = document.getElementById("date").value;
+            const result = document.getElementById("result");
+
+            if (dob == "") {
+                result.innerHTML = `<span style="color:red;">Please enter your date of birth!</span>`;
+                return;
+            }
+
+            let dobDate = new Date(dob);
+            let today = new Date();
+
+            let years = today.getFullYear() - dobDate.getFullYear();
+            let months = today.getMonth() - dobDate.getMonth();
+            let days = today.getDate() - dobDate.getDate();
+
+            if (days < 0) {
+                months--;
+                days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+            }
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            let birthDay = daysOfWeek[dobDate.getDay()];
+
+            let nextBirthday = new Date(today.getFullYear(), dobDate.getMonth(), dobDate.getDate());
+            if (nextBirthday < today) {
+                nextBirthday.setFullYear(today.getFullYear() + 1);
+            }
+
+            let options = { year: 'numeric', month: 'long', day: 'numeric' };
+            let nextBdayStr = nextBirthday.toLocaleDateString("en-US", options);
+
+            let diffTime = nextBirthday - today;
+            let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            result.innerHTML = `
+                <div class="text-blue-700 space-y-4">
+                    <div class=" rounded-lg p-2 text-center">
+                        <p class="text-3xl font-bold text-blue-800">Welcome <span class="text-blue-900">${name}</span>!
+                        </p>
+                    </div>
+
+                    <div class="bg-white rounded-lg p-6 border border-blue-200 shadow-sm">
+                        <p class="text-lg font-bold text-center mb-4 text-blue-800">Your Age</p>
+                        <div class="flex justify-center items-center space-x-9">
+                            <div
+                                class="w-20 h-20 bg-slate-500 text-white rounded-lg flex flex-col items-center justify-center shadow-md">
+                                <div class="text-xl font-bold">${years}</div>
+                                <div class="text-xs">YEARS</div>
+                            </div>
+
+                            <div
+                                class="w-20 h-20 bg-slate-500 text-white rounded-lg flex flex-col items-center justify-center shadow-md">
+                                <div class="text-xl font-bold">${months}</div>
+                                <div class="text-xs">MONTHS</div>
+                            </div>
+
+                            <div
+                                class="w-20 h-20 bg-slate-500 text-white rounded-lg flex flex-col items-center justify-center shadow-md">
+                                <div class="text-xl font-bold">${days}</div>
+                                <div class="text-xs">DAYS</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-purple-50 border border-purple-200 rounded-lg p-4 ">
+                        <p class="text-center text-purple-800 font-medium">
+                            You were born on a <span class="font-bold text-purple-900">${birthDay}</span>
+                        </p>
+
+                        <p class="text-center text-pink-800 font-medium">
+                            Next Birthday: <span class="font-bold text-pink-900">${nextBdayStr}</span>
+                        </p>
+
+                        <p class="text-center text-yellow-800 font-medium">
+                            Days left until next birthday: <span class="font-bold text-yellow-900">${diffDays}
+                                days</span>
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+
+</body>
+
+</html>
